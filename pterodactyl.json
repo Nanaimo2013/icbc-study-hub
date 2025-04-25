@@ -5,20 +5,23 @@
     "name": "ICBC Study Hub",
     "author": "Study Hub Team",
     "description": "A study application for the ICBC knowledge test",
-    "image": "ghcr.io/pterodactyl/yolks:nodejs_16",
-    "startup": "npm start",
+    "features": ["nodejs", "nginx"],
+    "docker_images": {
+      "ghcr.io/nanaimo2013/icbc-study-hub:latest": "nodejs 16"
+    },
+    "startup": "bash /entrypoint.sh",
     "config": {
       "files": "{}",
-      "startup": "{\"done\": \"started\"}",
+      "startup": "{\"done\": \"Starting ICBC Study Hub\"}",
       "logs": "{}",
       "stop": "^C"
     }
   },
   "scripts": {
     "installation": {
-      "script": "npm install\r\necho \"Installation complete\"\r\n",
-      "container": "ghcr.io/pterodactyl/installers:alpine",
-      "entrypoint": "ash"
+      "script": "npm ci && npm run build && echo \"Installation complete\"",
+      "container": "ghcr.io/nanaimo2013/icbc-study-hub:latest",
+      "entrypoint": "bash"
     }
   },
   "variables": [
@@ -26,10 +29,10 @@
       "name": "Port",
       "description": "The port that the ICBC Study Hub will run on.",
       "env_variable": "PORT",
-      "default_value": "3000",
+      "default_value": "25572",
       "user_viewable": true,
       "user_editable": true,
-      "rules": "required|numeric|max:65535"
+      "rules": "required|string|max:6"
     },
     {
       "name": "Node Environment",
@@ -39,6 +42,15 @@
       "user_viewable": true,
       "user_editable": true,
       "rules": "required|string|in:development,production"
+    },
+    {
+      "name": "Build Command",
+      "description": "The command to build the application.",
+      "env_variable": "BUILD_COMMAND",
+      "default_value": "npm run build",
+      "user_viewable": true,
+      "user_editable": false,
+      "rules": "required|string"
     }
   ]
 } 

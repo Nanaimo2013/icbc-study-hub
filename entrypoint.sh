@@ -1,6 +1,7 @@
 #!/bin/bash
 # ICBC Study Hub - Entrypoint Script for Pterodactyl
 
+# Exit on error
 set -e
 
 # Print banner
@@ -41,19 +42,22 @@ if [ ! -d "node_modules" ] || [ ! -f "node_modules/.installed" ]; then
     touch node_modules/.installed
 fi
 
-# Start based on environment
+# Print environment for debugging (excluding sensitive data)
+echo "Node Environment: $NODE_ENV"
+echo "Port: $PORT"
+
+# Ensure required directories exist
+mkdir -p /app/logs
+
+# Wait for any dependent services (if needed)
+# Example: wait-for-it.sh db:3306 -t 60
+
+# Start the application with proper production flags
 if [ "$NODE_ENV" = "production" ]; then
-    echo "Starting in production mode..."
-    
-    # Check if build folder exists, if not, build the app
-    if [ ! -d "build" ]; then
-        echo "Building application..."
-        npm run build
-    fi
-    
-    # Start with serve for production
-    npx serve -s build -l $PORT
+    # Use PM2 in production for better process management
+    npm install -g pm2
+    pm2-runtime start npm -- start
 else
-    echo "Starting in development mode..."
+    # Development mode
     npm start
 fi 

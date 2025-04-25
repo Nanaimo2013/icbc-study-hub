@@ -1,22 +1,53 @@
 version: '3.8'
 
 services:
-  icbc-study-hub:
+  # Production environment
+  production:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: icbc-study-hub
+      dockerfile: Dockerfile.production
+    image: icbc-study-hub:production
     ports:
-      - "3000:80"
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
     restart: unless-stopped
-    # If you need environment variables
-    # environment:
-    #   - NODE_ENV=production
+
+  # Development environment
+  development:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: icbc-study-hub:dev
+    ports:
+      - "3001:3000"
+      - "9229:9229"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
     volumes:
-      - ./public:/app/public
-      # Add additional volume mappings if needed
-    networks:
-      - web
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+
+  # Pterodactyl environment
+  pterodactyl:
+    build:
+      context: .
+      dockerfile: Dockerfile.pterodactyl
+    image: icbc-study-hub:pterodactyl
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - P_SERVER_LOCATION=1
+    volumes:
+      - pterodactyl_data:/home/container
+
+volumes:
+  pterodactyl_data:
 
 networks:
   web:

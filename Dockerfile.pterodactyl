@@ -1,31 +1,47 @@
-FROM node:16-alpine
+FROM node:16-bullseye-slim
 
-# Set working directory
 WORKDIR /home/container
 
-# Add entrypoint script
-COPY entrypoint.sh .
-RUN chmod +x entrypoint.sh
+# Install required system dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    nginx \
+    curl \
+    ca-certificates \
+    openssl \
+    git \
+    tzdata \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Environment variables
-ENV NODE_ENV=production \
-    PORT=3000
-
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Installing dependencies
-RUN npm ci && \
-    npm cache clean --force
-
-# Copy all files
+# Copy application files
 COPY . .
 
-# Default command
-CMD ["/bin/ash", "entrypoint.sh"]
+# Install PM2 globally
+RUN npm install -g pm2
+
+# Install dependencies
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Copy configuration files
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Default environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV TZ=UTC
+
+# Container configuration
+USER container
+ENV USER=container HOME=/home/container
+
+# Expose ports
+EXPOSE 3000
+
+# Set default command
+CMD ["/bin/bash", "/entrypoint.sh"]
 
 # Tell Pterodactyl where it can find the server data
-VOLUME ["/home/container"]
-
-# Tell Pterodactyl which port to expose
-EXPOSE ${PORT} 
+VOLUME ["/home/container"] 

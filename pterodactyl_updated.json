@@ -1,0 +1,56 @@
+{
+  "_comment": "ICBC Study Hub Pterodactyl Egg - Production Ready",
+  "meta": {
+    "version": "1.1.0",
+    "name": "ICBC Study Hub",
+    "author": "Study Hub Team",
+    "description": "A study application for the ICBC knowledge test with production optimization",
+    "features": ["mysql","nginx"],
+    "docker_images": {
+      "ghcr.io/your-username/icbc-study-hub:latest": "nodejs 16"
+    },
+    "startup": "bash /entrypoint.sh",
+    "config": {
+      "files": "{}",
+      "startup": "{\"done\": \"Server started\"}",
+      "logs": "{}",
+      "stop": "^C"
+    }
+  },
+  "scripts": {
+    "installation": {
+      "script": "apt update && apt install -y nginx && npm ci --only=production && npm run build && echo \"Installation complete\"",
+      "container": "ghcr.io/pterodactyl/installers:debian",
+      "entrypoint": "bash"
+    }
+  },
+  "variables": [
+    {
+      "name": "Port",
+      "description": "The port that the ICBC Study Hub will run on.",
+      "env_variable": "PORT",
+      "default_value": "3000",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|numeric|max:65535"
+    },
+    {
+      "name": "Node Environment",
+      "description": "The environment to run the application in.",
+      "env_variable": "NODE_ENV",
+      "default_value": "production",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string|in:development,production"
+    },
+    {
+      "name": "Build Command",
+      "description": "The command to build the application.",
+      "env_variable": "BUILD_COMMAND",
+      "default_value": "npm run build",
+      "user_viewable": true,
+      "user_editable": false,
+      "rules": "required|string"
+    }
+  ]
+} 

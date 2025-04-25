@@ -3,43 +3,48 @@
 # Exit on error
 set -e
 
-# Update package lists
-echo "Updating package lists..."
-apt-get update
+cd /home/container
 
-# Install essential packages
-echo "Installing essential packages..."
-apt-get install -y \
-    bash \
-    nginx \
-    curl \
-    ca-certificates \
-    openssl \
-    git \
-    tzdata \
-    nodejs \
-    npm \
-    build-essential \
-    python3
+# Output current state
+echo "------------------------------------"
+echo "Starting installation process..."
+echo "Current directory: $(pwd)"
+echo "Node.js version: $(node -v)"
+echo "NPM version: $(npm -v)"
+echo "------------------------------------"
 
-# Clean up
-apt-get clean
-rm -rf /var/lib/apt/lists/*
+# Clone repository if it doesn't exist
+if [ ! -d ".git" ]; then
+    echo "Cloning fresh repository..."
+    git clone https://github.com/Nanaimo2013/icbc-study-hub.git .
+else
+    echo "Repository exists, pulling updates..."
+    git pull
+fi
 
-# Install Node.js global packages
-echo "Installing global Node.js packages..."
-npm install -g pm2
+# Verify package.json exists
+if [ ! -f "package.json" ]; then
+    echo "ERROR: package.json not found!"
+    exit 1
+fi
+
+# Install dependencies
+echo "Installing dependencies..."
+npm install --production
+
+# Make scripts executable
+echo "Setting up permissions..."
+chmod +x startup.sh entrypoint.sh
 
 # Create necessary directories
-echo "Setting up directories..."
-mkdir -p /home/container
+mkdir -p /home/container/logs
+mkdir -p /home/container/tmp
 
-# Set permissions
-echo "Setting permissions..."
+# Set proper ownership
 chown -R container:container /home/container
 
-# Set up Node.js environment
-echo "Setting up Node.js environment..."
-npm ci --only=production
-
-echo "Installation complete!" 
+echo "------------------------------------"
+echo "Installation complete!"
+echo "Contents of directory:"
+ls -la
+echo "------------------------------------" 

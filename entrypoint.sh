@@ -60,4 +60,18 @@ if [ "$NODE_ENV" = "production" ]; then
 else
     # Development mode
     npm start
-fi 
+fi
+
+# Output Current Running Process
+echo "Starting container with the following settings:"
+echo "Running as user: $(whoami)"
+echo "Current working directory: $(pwd)"
+echo "Node.js version: $(node -v)"
+echo "NPM version: $(npm -v)"
+
+# Replace Startup Variables
+MODIFIED_STARTUP=$(echo -e ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')
+echo ":/home/container$ ${MODIFIED_STARTUP}"
+
+# Run the Server
+eval ${MODIFIED_STARTUP} 

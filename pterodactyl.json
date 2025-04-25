@@ -1,0 +1,44 @@
+{
+  "_comment": "ICBC Study Hub Pterodactyl Egg",
+  "meta": {
+    "version": "1.0.0",
+    "name": "ICBC Study Hub",
+    "author": "Study Hub Team",
+    "description": "A study application for the ICBC knowledge test",
+    "image": "ghcr.io/pterodactyl/yolks:nodejs_16",
+    "startup": "npm start",
+    "config": {
+      "files": "{}",
+      "startup": "{\"done\": \"started\"}",
+      "logs": "{}",
+      "stop": "^C"
+    }
+  },
+  "scripts": {
+    "installation": {
+      "script": "npm install\r\necho \"Installation complete\"\r\n",
+      "container": "ghcr.io/pterodactyl/installers:alpine",
+      "entrypoint": "ash"
+    }
+  },
+  "variables": [
+    {
+      "name": "Port",
+      "description": "The port that the ICBC Study Hub will run on.",
+      "env_variable": "PORT",
+      "default_value": "3000",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|numeric|max:65535"
+    },
+    {
+      "name": "Node Environment",
+      "description": "The environment to run the application in.",
+      "env_variable": "NODE_ENV",
+      "default_value": "production",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string|in:development,production"
+    }
+  ]
+} 

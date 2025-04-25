@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Progress - ICBC Study Hub</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header>
+        <h1>Your Progress</h1>
+        <button id="toggleMode" class="toggle-btn">🌙</button>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="flashcards.html">Flashcards</a>
+        <a href="practice.html">Practice Test</a>
+        <a href="signs.html">Signs</a>
+        <a href="stats.html">Progress</a>
+    </nav>
+
+    <main>
+        <section class="stats-container">
+            <h2>Statistics Overview</h2>
+            <div id="stats">
+                <p>Total Questions Attempted: <span id="totalQuestions">0</span></p>
+                <p>Correct Answers: <span id="correctAnswers">0</span></p>
+                <p>Incorrect Answers: <span id="incorrectAnswers">0</span></p>
+            </div>
+            <button id="resetStatsBtn" class="btn">Reset Stats</button>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        // Assuming stats are stored in localStorage
+        function updateStats() {
+            const totalQuestions = localStorage.getItem('totalQuestions') || 0;
+            const correctAnswers = localStorage.getItem('correctAnswers') || 0;
+            const incorrectAnswers = totalQuestions - correctAnswers;
+
+            document.getElementById('totalQuestions').innerText = totalQuestions;
+            document.getElementById('correctAnswers').innerText = correctAnswers;
+            document.getElementById('incorrectAnswers').innerText = incorrectAnswers;
+        }
+
+        function resetStats() {
+            localStorage.removeItem('totalQuestions');
+            localStorage.removeItem('correctAnswers');
+            updateStats();
+        }
+
+        document.getElementById('resetStatsBtn').addEventListener('click', resetStats);
+
+        // Update stats on page load
+        updateStats();
+    </script>
+</body>
+</html>

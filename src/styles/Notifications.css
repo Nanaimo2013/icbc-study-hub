@@ -1,0 +1,74 @@
+.notifications-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 350px;
+}
+
+.notification {
+  padding: 1rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  animation: slide-in 0.3s ease-out;
+}
+
+.notification-info {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  color: #0d47a1;
+}
+
+.notification-success {
+  background-color: #e8f5e9;
+  border-left: 4px solid #4caf50;
+  color: #1b5e20;
+}
+
+.notification-warning {
+  background-color: #fff8e1;
+  border-left: 4px solid #ffc107;
+  color: #ff6f00;
+}
+
+.notification-error {
+  background-color: #ffebee;
+  border-left: 4px solid #f44336;
+  color: #b71c1c;
+}
+
+.notification-content {
+  flex: 1;
+  margin-right: 0.5rem;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0;
+  opacity: 0.7;
+}
+
+.notification-close:hover {
+  opacity: 1;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+} 

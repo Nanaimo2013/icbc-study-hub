@@ -1,0 +1,328 @@
+{
+  "questions": [
+    {
+      "question": "What does a red octagon sign mean?",
+      "choices": ["Yield", "Stop", "Do Not Enter", "School Zone"],
+      "answer": "Stop",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do at a flashing red light?",
+      "choices": ["Slow down", "Stop completely", "Yield only", "Speed up"],
+      "answer": "Stop completely",
+      "category": "Rules"
+    },
+    {
+      "question": "What does a yellow diamond sign indicate?",
+      "choices": ["Warning", "Regulatory", "Information", "Construction"],
+      "answer": "Warning",
+      "category": "Signs"
+    },
+    {
+      "question": "What is the maximum speed limit in a residential area?",
+      "choices": ["30 km/h", "50 km/h", "60 km/h", "80 km/h"],
+      "answer": "50 km/h",
+      "category": "Rules"
+    },
+    {
+      "question": "What does a green light mean?",
+      "choices": ["Stop", "Proceed with caution", "Go", "Yield"],
+      "answer": "Go",
+      "category": "Rules"
+    },
+    {
+      "question": "What should you do if you see a school zone sign?",
+      "choices": ["Speed up", "Slow down and watch for children", "Ignore it", "Honk your horn"],
+      "answer": "Slow down and watch for children",
+      "category": "Signs"
+    },
+    {
+      "question": "What does a no entry sign mean?",
+      "choices": ["You can enter", "You cannot enter", "You can park", "You can stop"],
+      "answer": "You cannot enter",
+      "category": "Signs"
+    },
+    {
+      "question": "What is the legal blood alcohol concentration (BAC) limit for drivers in most provinces?",
+      "choices": ["0.05%", "0.08%", "0.10%", "0.00%"],
+      "answer": "0.08%",
+      "category": "Rules"
+    },
+    {
+      "question": "What should you do if you encounter a pedestrian crossing the road?",
+      "choices": ["Honk your horn", "Speed up", "Stop and give way", "Drive around them"],
+      "answer": "Stop and give way",
+      "category": "Rules"
+    },
+    {
+      "question": "What does a construction zone sign look like?",
+      "choices": ["Red triangle", "Orange diamond", "Yellow circle", "Green square"],
+      "answer": "Orange diamond",
+      "category": "Signs"
+    },
+    {
+      "question": "What is the purpose of a yield sign?",
+      "choices": ["To stop", "To give way to other traffic", "To speed up", "To park"],
+      "answer": "To give way to other traffic",
+      "category": "Rules"
+    },
+    {
+      "question": "What should you do if your vehicle starts to skid?",
+      "choices": ["Steer in the opposite direction", "Steer in the direction of the skid", "Brake hard", "Accelerate"],
+      "answer": "Steer in the direction of the skid",
+      "category": "Hazards"
+    },
+    {
+      "question": "What does a no parking sign indicate?",
+      "choices": ["You can park", "You cannot park", "You can stop briefly", "You can park only at night"],
+      "answer": "You cannot park",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you see an emergency vehicle with flashing lights?",
+      "choices": ["Speed up and pass them", "Pull over and stop", "Ignore it", "Honk your horn"],
+      "answer": "Pull over and stop",
+      "category": "Rules"
+    },
+    {
+      "question": "What does a slippery road sign indicate?",
+      "choices": ["Road is clear", "Road is wet and slippery", "Road is under construction", "Road is closed"],
+      "answer": "Road is wet and slippery",
+      "category": "Hazards"
+    },
+    {
+      "question": "What should you do if you miss your exit on the highway?",
+      "choices": ["Reverse back to the exit", "Make a U-turn", "Continue to the next exit", "Stop and wait"],
+      "answer": "Continue to the next exit",
+      "category": "Rules"
+    },
+    {
+      "question": "What does a stop sign mean?",
+      "choices": ["Slow down", "Yield", "Stop completely", "Proceed with caution"],
+      "answer": "Stop completely",
+      "category": "Signs"
+    },
+    {
+      "question": "What is the correct hand signal for a left turn?",
+      "choices": ["Left arm straight out", "Left arm bent up", "Left arm bent down", "Right arm straight out"],
+      "answer": "Left arm straight out",
+      "category": "Rules"
+    },
+    {
+      "question": "What should you do when you see a pedestrian in a crosswalk?",
+      "choices": ["Speed up", "Stop and give way", "Honk your horn", "Continue driving"],
+      "answer": "Stop and give way",
+      "category": "Rules"
+    },
+    {
+      "question": "What does a flashing yellow light mean?",
+      "choices": ["Stop", "Proceed with caution", "Go", "Yield"],
+      "answer": "Proceed with caution",
+      "category": "Rules"
+    },
+    {
+      "question": "What should you do if you are being tailgated?",
+      "choices": ["Speed up", "Change lanes and let them pass", "Brake suddenly", "Ignore it"],
+      "answer": "Change lanes and let them pass",
+      "category": "Rules"
+    },
+    {
+      "question": "What does a no U-turn sign indicate?",
+      "choices": ["You can make a U-turn", "You cannot make a U-turn", "You can turn left", "You can turn right"],
+      "answer": "You cannot make a U-turn",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you see a train approaching at a level crossing?",
+      "choices": ["Speed up to cross", "Stop and wait", "Cross quickly", "Honk your horn"],
+      "answer": "Stop and wait",
+      "category": "Hazards"
+    },
+    {
+      "question": "What does a bicycle lane sign indicate?",
+      "choices": ["Bicycles only", "No bicycles allowed", "Shared lane", "Parking for bicycles"],
+      "answer": "Bicycles only",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if your brakes fail?",
+      "choices": ["Pump the brakes", "Shift to a lower gear", "Use the handbrake", "All of the above"],
+      "answer": "All of the above",
+      "category": "Hazards"
+    },
+    {
+      "question": "What does a pedestrian crossing sign look like?",
+      "choices": ["Red circle", "Yellow diamond", "Blue square", "White rectangle"],
+      "answer": "White rectangle",
+      "category": "Signs"
+    },
+    {
+      "question": "What is the minimum following distance behind another vehicle?",
+      "choices": ["1 second", "2 seconds", "3 seconds", "4 seconds"],
+      "answer": "2 seconds",
+      "category": "Rules"
+    },
+    {
+      "question": "What should you do if you are involved in a collision?",
+      "choices": ["Leave the scene", "Exchange information", "Call the police", "Both B and C"],
+      "answer": "Both B and C",
+      "category": "Rules"
+    },
+    {
+      "question": "What does a roundabout sign indicate?",
+      "choices": ["Yield", "Stop", "Go", "No entry"],
+      "answer": "Yield",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you see a sign indicating a sharp turn ahead?",
+      "choices": ["Speed up", "Slow down and prepare to turn", "Ignore it", "Honk your horn"],
+      "answer": "Slow down and prepare to turn",
+      "category": "Hazards"
+    },
+    {
+      "question": "What does a no left turn sign mean?",
+      "choices": ["You can turn left", "You cannot turn left", "You can turn right", "You can go straight"],
+      "answer": "You cannot turn left",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you see a sign indicating a pedestrian crossing?",
+      "choices": ["Speed up", "Stop and give way", "Ignore it", "Honk your horn"],
+      "answer": "Stop and give way",
+      "category": "Rules"
+    },
+    {
+      "question": "What does a speed limit sign indicate?",
+      "choices": ["Minimum speed", "Maximum speed", "Recommended speed", "No speed limit"],
+      "answer": "Maximum speed",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you are driving in fog?",
+      "choices": ["Use high beams", "Use low beams", "Drive faster", "Pull over"],
+      "answer": "Use low beams",
+      "category": "Hazards"
+    },
+    {
+      "question": "What does a no right turn sign mean?",
+      "choices": ["You can turn right", "You cannot turn right", "You can go straight", "You can turn left"],
+      "answer": "You cannot turn right",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you see a sign indicating a slippery road?",
+      "choices": ["Speed up", "Slow down and drive carefully", "Ignore it", "Honk your horn"],
+      "answer": "Slow down and drive carefully",
+      "category": "Hazards"
+    },
+    {
+      "question": "What does a two-way traffic sign indicate?",
+      "choices": ["Traffic flows in one direction", "Traffic flows in both directions", "No traffic allowed", "Only bicycles allowed"],
+      "answer": "Traffic flows in both directions",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you see a sign indicating a school zone?",
+      "choices": ["Speed up", "Slow down and watch for children", "Ignore it", "Honk your horn"],
+      "answer": "Slow down and watch for children",
+      "category": "Signs"
+    },
+    {
+      "question": "What does a merge sign indicate?",
+      "choices": ["Two lanes merge into one", "You can pass", "No merging allowed", "Traffic is heavy"],
+      "answer": "Two lanes merge into one",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you see a sign indicating a construction zone?",
+      "choices": ["Speed up", "Slow down and watch for workers", "Ignore it", "Honk your horn"],
+      "answer": "Slow down and watch for workers",
+      "category": "Hazards"
+    },
+    {
+      "question": "What does a no bicycles sign mean?",
+      "choices": ["Bicycles are allowed", "Bicycles are not allowed", "Bicycles can park", "Bicycles can ride on the sidewalk"],
+      "answer": "Bicycles are not allowed",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you see a sign indicating a stop ahead?",
+      "choices": ["Speed up", "Prepare to stop", "Ignore it", "Honk your horn"],
+      "answer": "Prepare to stop",
+      "category": "Hazards"
+    },
+    {
+      "question": "What does a no left turn sign indicate?",
+      "choices": ["You can turn left", "You cannot turn left", "You can turn right", "You can go straight"],
+      "answer": "You cannot turn left",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you see a sign indicating a pedestrian crossing?",
+      "choices": ["Speed up", "Stop and give way", "Ignore it", "Honk your horn"],
+      "answer": "Stop and give way",
+      "category": "Rules"
+    },
+    {
+      "question": "What does a speed limit sign indicate?",
+      "choices": ["Minimum speed", "Maximum speed", "Recommended speed", "No speed limit"],
+      "answer": "Maximum speed",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you are driving in fog?",
+      "choices": ["Use high beams", "Use low beams", "Drive faster", "Pull over"],
+      "answer": "Use low beams",
+      "category": "Hazards"
+    },
+    {
+      "question": "What does a no right turn sign mean?",
+      "choices": ["You can turn right", "You cannot turn right", "You can go straight", "You can turn left"],
+      "answer": "You cannot turn right",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you see a sign indicating a slippery road?",
+      "choices": ["Speed up", "Slow down and drive carefully", "Ignore it", "Honk your horn"],
+      "answer": "Slow down and drive carefully",
+      "category": "Hazards"
+    },
+    {
+      "question": "What does a two-way traffic sign indicate?",
+      "choices": ["Traffic flows in one direction", "Traffic flows in both directions", "No traffic allowed", "Only bicycles allowed"],
+      "answer": "Traffic flows in both directions",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you see a sign indicating a school zone?",
+      "choices": ["Speed up", "Slow down and watch for children", "Ignore it", "Honk your horn"],
+      "answer": "Slow down and watch for children",
+      "category": "Signs"
+    },
+    {
+      "question": "What does a merge sign indicate?",
+      "choices": ["Two lanes merge into one", "You can pass", "No merging allowed", "Traffic is heavy"],
+      "answer": "Two lanes merge into one",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you see a sign indicating a construction zone?",
+      "choices": ["Speed up", "Slow down and watch for workers", "Ignore it", "Honk your horn"],
+      "answer": "Slow down and watch for workers",
+      "category": "Hazards"
+    },
+    {
+      "question": "What does a no bicycles sign mean?",
+      "choices": ["Bicycles are allowed", "Bicycles are not allowed", "Bicycles can park", "Bicycles can ride on the sidewalk"],
+      "answer": "Bicycles are not allowed",
+      "category": "Signs"
+    },
+    {
+      "question": "What should you do if you see a sign indicating a stop ahead?",
+      "choices": ["Speed up", "Prepare to stop", "Ignore it", "Honk your horn"],
+      "answer": "Prepare to stop",
+      "category": "Hazards"
+    }
+  ]
+}

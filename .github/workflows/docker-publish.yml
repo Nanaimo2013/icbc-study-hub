@@ -1,0 +1,144 @@
+name: Docker Build and Publish
+
+on:
+  push:
+    branches: [ main, master, develop ]
+    tags: [ 'v*.*.*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag for manual release'
+        required: false
+        default: ''
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  DOCKER_BUILDKIT: 1
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      # This is needed for tagging the release
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: 'arm64,arm'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          buildkitd-flags: --debug
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha,format=long
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') || github.ref == format('refs/heads/{0}', 'master') }}
+          flavor: |
+            latest=false
+            prefix=
+            suffix=
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          build-args: |
+            BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+            VCS_REF=${{ github.sha }}
+            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+
+      # Temp fix for growing cache
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      # Create a GitHub release if this is a tag push
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: false
+          prerelease: false
+          name: "Release ${{ github.ref_name }}"
+          body: |
+            ## ICBC Study Hub ${{ github.ref_name }}
+            
+            ### Docker Images
+            
+            Pull the image:
+            ```sh
+            docker pull ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ```
+            
+            Run the image:
+            ```sh
+            docker run -p 3000:80 ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ```
+
+      # Create release note (skip if PR)
+      - name: Generate Release Notes
+        if: github.event_name != 'pull_request'
+        run: |
+          echo "## Automatic Release - $(date +'%Y-%m-%d %H:%M:%S')" > RELEASE.md
+          echo "" >> RELEASE.md
+          echo "🔗 [Docker Image](https://github.com/${{ github.repository }}/pkgs/container/${{ github.event.repository.name }})" >> RELEASE.md
+          echo "" >> RELEASE.md
+          echo "📝 Commit: ${{ github.sha }}" >> RELEASE.md
+          echo "" >> RELEASE.md
+          echo "## Available Tags" >> RELEASE.md
+          echo "- \`$(echo "${{ steps.meta.outputs.tags }}" | tr '\n' ' ' | sed 's/ $//')\`" >> RELEASE.md
+
+      # Output the build info
+      - name: Print Docker Image Info
+        run: |
+          echo "Docker image was built and published with the following tags:"
+          echo "${{ steps.meta.outputs.tags }}"
+          echo ""
+          echo "To pull this image:"
+          echo "docker pull $(echo "${{ steps.meta.outputs.tags }}" | head -n 1)" 

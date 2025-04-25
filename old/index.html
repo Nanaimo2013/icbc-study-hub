@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ICBC Study Hub - Home</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>ICBC Study Hub</h1>
+    <button id="toggleMode" class="toggle-btn">🌙</button>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="flashcards.html">Flashcards</a>
+    <a href="practice.html">Practice Test</a>
+    <a href="signs.html">Signs</a>
+    <a href="stats.html">Progress</a>
+  </nav>
+
+  <main>
+    <section class="intro">
+      <h2>Welcome to the ICBC Study Hub</h2>
+      <p>Your one-stop solution for mastering the ICBC knowledge test. This platform offers a variety of interactive tools to help you learn and retain essential driving knowledge.</p>
+      <p>Whether you're preparing for the written test or just want to refresh your knowledge, our resources are designed to make learning engaging and effective.</p>
+    </section>
+
+    <section class="card-container">
+      <div class="card">
+        <h3>Flashcards</h3>
+        <p>Study road signs and rules with interactive flashcards. Perfect for quick reviews and memorization.</p>
+        <a href="flashcards.html" class="btn">Start Flashcards</a>
+      </div>
+      <div class="card">
+        <h3>Practice Test</h3>
+        <p>Take randomized tests to prepare for the ICBC knowledge exam. Simulate real test conditions and track your progress.</p>
+        <a href="practice.html" class="btn">Start Practice Test</a>
+      </div>
+      <div class="card">
+        <h3>Signs Study</h3>
+        <p>Learn about various road signs and their meanings. Visual aids help reinforce your understanding.</p>
+        <a href="signs.html" class="btn">View Signs</a>
+      </div>
+      <div class="card">
+        <h3>Your Progress</h3>
+        <p>Track your progress and see how well you're doing. Review your performance and identify areas for improvement.</p>
+        <a href="stats.html" class="btn">View Progress</a>
+      </div>
+    </section>
+
+    <section class="features">
+      <h2>Features</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h3>Interactive Flashcards</h3>
+          <p>Quick learning with engaging flashcards.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Randomized Practice Tests</h3>
+          <p>Simulate real exam conditions.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Visual Sign Study</h3>
+          <p>Learn with images and descriptions.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Progress Tracking</h3>
+          <p>Monitor your learning journey.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Dark Mode</h3>
+          <p>Comfortable reading at night.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Responsive Design</h3>
+          <p>Access from any device.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Community Support</h3>
+          <p>Engage with fellow learners.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Regular Updates</h3>
+          <p>Stay current with new questions.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="progress-section">
+      <h2>Your Learning Progress</h2>
+      <div class="progress-bar">
+        <div class="progress" id="progressBar" style="width: 0%;">0%</div>
+      </div>
+      <button id="saveProgressBtn" class="btn">Save Progress</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

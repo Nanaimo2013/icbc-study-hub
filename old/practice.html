@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Practice Test - ICBC Study Hub</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header>
+        <h1>Practice Test Mode</h1>
+        <button id="toggleMode" class="toggle-btn">🌙</button>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="flashcards.html">Flashcards</a>
+        <a href="practice.html">Practice Test</a>
+        <a href="signs.html">Signs</a>
+        <a href="stats.html">Progress</a>
+    </nav>
+
+    <main>
+        <section class="quiz-container">
+            <div class="question" id="question"></div>
+            <div class="choices" id="choices"></div>
+            <button id="nextBtn" style="display: none;" class="btn">Next Question</button>
+            <div id="progress"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        let questions = [];
+        let currentIndex = 0;
+        let correctCount = 0;
+
+        // Load questions from questions.json
+        fetch('questions.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                questions = data.questions.filter(q => q.category === "Practice"); // Ensure we filter for practice questions
+                displayQuestion();
+            })
+            .catch(error => console.error('Error loading questions:', error));
+
+        function displayQuestion() {
+            if (currentIndex < questions.length) {
+                document.getElementById('question').innerText = questions[currentIndex].question;
+                const choicesContainer = document.getElementById('choices');
+                choicesContainer.innerHTML = ''; // Clear previous choices
+
+                questions[currentIndex].choices.forEach(choice => {
+                    const button = document.createElement('button');
+                    button.innerText = choice;
+                    button.classList.add('choice-btn', 'btn');
+                    button.addEventListener('click', () => selectAnswer(choice));
+                    choicesContainer.appendChild(button);
+                });
+
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('progress').innerText = `Question ${currentIndex + 1} of ${questions.length}`;
+            } else {
+                endQuiz();
+            }
+        }
+
+        function selectAnswer(selectedChoice) {
+            const correctAnswer = questions[currentIndex].answer;
+            if (selectedChoice === correctAnswer) {
+                correctCount++;
+            }
+            document.getElementById('nextBtn').style.display = 'block';
+            const choiceButtons = document.querySelectorAll('.choice-btn');
+            choiceButtons.forEach(button => {
+                button.disabled = true; // Disable all buttons after selection
+                if (button.innerText === correctAnswer) {
+                    button.classList.add('correct');
+                } else {
+                    button.classList.add('incorrect');
+                }
+            });
+        }
+
+        function endQuiz() {
+            document.querySelector('.quiz-container').innerHTML = `<h2>Quiz Completed!</h2><p>Correct answers: ${correctCount} out of ${questions.length}</p>`;
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            currentIndex++;
+            displayQuestion();
+        });
+    </script>
+</body>
+</html>

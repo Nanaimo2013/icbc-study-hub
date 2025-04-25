@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signs Study Mode - ICBC Study Hub</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header>
+        <h1>Signs Study Mode</h1>
+        <button id="toggleMode" class="toggle-btn">🌙</button>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="flashcards.html">Flashcards</a>
+        <a href="practice.html">Practice Test</a>
+        <a href="signs.html">Signs</a>
+        <a href="stats.html">Progress</a>
+    </nav>
+
+    <main>
+        <section class="signs-container">
+            <div class="sign" id="sign">
+                <img id="signImage" src="" alt="Road Sign" style="display: none;" />
+                <h2 id="signName"></h2>
+                <p id="signDescription"></p>
+            </div>
+            <button id="nextSignBtn" class="btn">Next Sign</button>
+            <div id="progress"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        let signs = [];
+        let currentSignIndex = 0;
+
+        // Load signs from questions.json (assuming signs are included in the same JSON)
+        fetch('questions.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                signs = data.questions.filter(q => q.category === "Signs"); // Ensure we filter for sign questions
+                displaySign();
+            })
+            .catch(error => console.error('Error loading signs:', error));
+
+        function displaySign() {
+            if (currentSignIndex < signs.length) {
+                const sign = signs[currentSignIndex];
+                document.getElementById('signName').innerText = sign.question;
+                document.getElementById('signDescription').innerText = sign.answer; // Assuming answer contains the description
+                const signImage = document.getElementById('signImage');
+                signImage.src = `images/${sign.question.replace(/\s+/g, '_').toLowerCase()}.png`; // Example image path
+                signImage.style.display = 'block'; // Show the image
+                document.getElementById('progress').innerText = `Sign ${currentSignIndex + 1} of ${signs.length}`;
+            } else {
+                endSigns();
+            }
+        }
+
+        function endSigns() {
+            document.querySelector('.signs-container').innerHTML = `<h2>You've completed the signs study!</h2>`;
+        }
+
+        document.getElementById('nextSignBtn').addEventListener('click', () => {
+            currentSignIndex++;
+            displaySign();
+        });
+    </script>
+</body>
+</html>

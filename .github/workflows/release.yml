@@ -1,0 +1,104 @@
+name: Release Package
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., v1.0.0)'
+        required: true
+        default: ''
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION=${GITHUB_REF#refs/tags/}
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Package version: $VERSION"
+
+      - name: Create release files
+        run: |
+          # Create release directory
+          mkdir -p release/icbc-study-hub-${{ steps.version.outputs.version }}
+          
+          # Copy build files
+          cp -r build release/icbc-study-hub-${{ steps.version.outputs.version }}/
+          
+          # Copy deployment files
+          cp Dockerfile docker-compose.yml nginx.conf release/icbc-study-hub-${{ steps.version.outputs.version }}/
+          
+          # Copy documentation
+          cp README.md PTERODACTYL_GUIDE.md release/icbc-study-hub-${{ steps.version.outputs.version }}/
+          
+          # Copy scripts
+          cp entrypoint.sh pterodactyl_startup.sh release/icbc-study-hub-${{ steps.version.outputs.version }}/
+          
+          # Create archive files
+          cd release
+          zip -r icbc-study-hub-${{ steps.version.outputs.version }}.zip icbc-study-hub-${{ steps.version.outputs.version }}
+          tar -czf icbc-study-hub-${{ steps.version.outputs.version }}.tar.gz icbc-study-hub-${{ steps.version.outputs.version }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ICBC Study Hub ${{ steps.version.outputs.version }}
+          draft: false
+          prerelease: false
+          tag_name: ${{ steps.version.outputs.version }}
+          files: |
+            release/icbc-study-hub-${{ steps.version.outputs.version }}.zip
+            release/icbc-study-hub-${{ steps.version.outputs.version }}.tar.gz
+          body: |
+            ## ICBC Study Hub ${{ steps.version.outputs.version }}
+            
+            ### 📦 Downloads
+            
+            - [ZIP Archive](https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/icbc-study-hub-${{ steps.version.outputs.version }}.zip)
+            - [TAR.GZ Archive](https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/icbc-study-hub-${{ steps.version.outputs.version }}.tar.gz)
+            
+            ### 🐳 Docker
+            
+            Pull the Docker image:
+            ```sh
+            docker pull ghcr.io/${{ github.repository }}:${{ steps.version.outputs.version }}
+            ```
+            
+            Run with Docker Compose:
+            ```sh
+            docker-compose up -d
+            ```
+            
+            ### 🚀 Pterodactyl
+            
+            See the included PTERODACTYL_GUIDE.md file for deployment instructions. 

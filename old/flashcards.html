@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flashcards - ICBC Study Hub</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header>
+        <h1>Flashcard Study Mode</h1>
+        <button id="toggleMode" class="toggle-btn">🌙</button>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="flashcards.html">Flashcards</a>
+        <a href="practice.html">Practice Test</a>
+        <a href="signs.html">Signs</a>
+        <a href="stats.html">Progress</a>
+    </nav>
+
+    <main>
+        <section class="flashcard-container">
+            <div class="flashcard">
+                <div class="question" id="question"></div>
+                <div class="answer" id="answer" style="display: none;"></div>
+            </div>
+            <button id="showAnswerBtn" class="btn">Show Answer</button>
+            <button id="nextCardBtn" class="btn" style="display: none;">Next Card</button>
+            <div id="progress"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        let questions = [];
+        let currentIndex = 0;
+        let correctCount = 0;
+
+        // Load questions from questions.json
+        fetch('questions.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                questions = data.questions.filter(q => q.category === "Flashcards"); // Ensure we filter for flashcard questions
+                displayQuestion();
+            })
+            .catch(error => console.error('Error loading questions:', error));
+
+        function displayQuestion() {
+            if (currentIndex < questions.length) {
+                document.getElementById('question').innerText = questions[currentIndex].question;
+                document.getElementById('answer').innerText = questions[currentIndex].answer;
+                document.getElementById('answer').style.display = 'none';
+                document.getElementById('progress').innerText = `Flashcard ${currentIndex + 1} of ${questions.length}`;
+            } else {
+                endFlashcards();
+            }
+        }
+
+        function endFlashcards() {
+            document.querySelector('.flashcard-container').innerHTML = `<h2>You've completed the flashcards!</h2><p>Correct answers: ${correctCount} out of ${questions.length}</p>`;
+        }
+
+        document.getElementById('showAnswerBtn').addEventListener('click', () => {
+            document.getElementById('answer').style.display = 'block';
+        });
+
+        document.getElementById('nextCardBtn').addEventListener('click', () => {
+            if (currentIndex < questions.length) {
+                // Track if the answer was correct or not
+                if (document.getElementById('answer').style.display === 'block') {
+                    correctCount++;
+                }
+                currentIndex++;
+                displayQuestion();
+            }
+        });
+    </script>
+</body>
+</html>

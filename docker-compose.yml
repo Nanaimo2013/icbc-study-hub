@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  icbc-study-hub:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: icbc-study-hub
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    # If you need environment variables
+    # environment:
+    #   - NODE_ENV=production
+    volumes:
+      - ./public:/app/public
+      # Add additional volume mappings if needed
+    networks:
+      - web
+
+networks:
+  web:
+    driver: bridge 

@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.production
-    image: icbc-study-hub:production
+    image: ghcr.io/nanaimo2013/icbc-study-hub:production
     ports:
       - "3000:3000"
     environment:
@@ -19,7 +19,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    image: icbc-study-hub:dev
+    image: ghcr.io/nanaimo2013/icbc-study-hub:dev
     ports:
       - "3001:3000"
       - "9229:9229"
@@ -36,7 +36,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.pterodactyl
-    image: icbc-study-hub:pterodactyl
+    image: ghcr.io/nanaimo2013/icbc-study-hub:pterodactyl
     ports:
       - "3002:3000"
     environment:

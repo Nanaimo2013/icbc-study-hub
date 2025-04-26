@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { Box, Typography, useMediaQuery, CssBaseline, ThemeProvider } from '@mui/material';
 
 // Custom theme
@@ -10,6 +10,7 @@ import Navbar from './components/Navbar';
 import Header from './components/Header';
 import Loader from './components/Loader';
 import Notifications from './components/Notifications';
+import Login from './components/Login';
 
 // Pages
 import Home from './pages/Home';
@@ -23,8 +24,24 @@ import questionService from './data/questionService';
 
 // Context
 import { NotificationProvider } from './contexts/NotificationContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
-function App() {
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const { currentUser, loading } = useAuth();
+  
+  if (loading) {
+    return <Loader text="Authenticating..." />;
+  }
+  
+  if (!currentUser) {
+    return <Navigate to="/login" />;
+  }
+  
+  return children;
+};
+
+function AppContent() {
   const [questions, setQuestions] = useState([]);
   const [darkMode, setDarkMode] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -34,6 +51,9 @@ function App() {
     practice: { total: 0, correct: 0 },
     signs: { total: 0, correct: 0 }
   });
+  
+  // Get auth context
+  const { currentUser, getUserData, updateProgress: saveUserProgress } = useAuth();
   
   // Create the theme based on dark mode preference
   const theme = createAppTheme(darkMode);
@@ -59,16 +79,33 @@ function App() {
         setLoading(false);
       }
       
-      // Load saved progress from questionService
-      const userProgress = questionService.getUserProgress();
-      if (userProgress) {
-        // Map the progress data structure if needed
-        const mappedProgress = {
-          flashcards: userProgress.flashcards || { total: 0, correct: 0 },
-          practice: userProgress.practice || { total: 0, correct: 0 },
-          signs: userProgress.signs || { total: 0, correct: 0 }
-        };
-        setProgress(mappedProgress);
+      // Load saved progress from questionService or user account if logged in
+      if (currentUser) {
+        getUserData().then(userData => {
+          if (userData && userData.progress) {
+            setProgress(userData.progress);
+          } else {
+            // Fallback to local storage
+            const userProgress = questionService.getUserProgress();
+            if (userProgress) {
+              setProgress({
+                flashcards: userProgress.flashcards || { total: 0, correct: 0 },
+                practice: userProgress.practice || { total: 0, correct: 0 },
+                signs: userProgress.signs || { total: 0, correct: 0 }
+              });
+            }
+          }
+        });
+      } else {
+        // Not logged in, use local storage
+        const userProgress = questionService.getUserProgress();
+        if (userProgress) {
+          setProgress({
+            flashcards: userProgress.flashcards || { total: 0, correct: 0 },
+            practice: userProgress.practice || { total: 0, correct: 0 },
+            signs: userProgress.signs || { total: 0, correct: 0 }
+          });
+        }
       }
       
       // Load theme preference from questionService or localStorage
@@ -81,7 +118,7 @@ function App() {
       setError('Failed to load questions. Please try again later.');
       setLoading(false);
     }
-  }, []);
+  }, [currentUser, getUserData]);
 
   // Save progress through questionService when it changes
   useEffect(() => {
@@ -92,9 +129,11 @@ function App() {
       return;
     }
     
-    // We don't need to save progress here as each component calls
-    // updateProgress which already saves to questionService
-  }, [progress]);
+    // Save to database if logged in
+    if (currentUser) {
+      saveUserProgress(progress);
+    }
+  }, [progress, currentUser, saveUserProgress]);
 
   // Save theme preference through questionService when it changes
   useEffect(() => {
@@ -107,16 +146,23 @@ function App() {
 
   const updateProgress = (module, totalQuestions, correctAnswers) => {
     // Update local state
-    setProgress(prevProgress => ({
-      ...prevProgress,
+    const updatedProgress = {
+      ...progress,
       [module]: {
-        total: prevProgress[module].total + totalQuestions,
-        correct: prevProgress[module].correct + correctAnswers
+        total: progress[module].total + totalQuestions,
+        correct: progress[module].correct + correctAnswers
       }
-    }));
+    };
     
-    // Update in questionService
+    setProgress(updatedProgress);
+    
+    // Update in questionService for non-logged in users
     questionService.updateProgress(module, totalQuestions, correctAnswers);
+    
+    // Save to database if logged in
+    if (currentUser) {
+      saveUserProgress(updatedProgress);
+    }
   };
 
   if (loading) {
@@ -172,28 +218,53 @@ function App() {
             backgroundColor: theme.palette.background.default 
           }}>
             <Routes>
+              <Route path="/login" element={<Login />} />
               <Route path="/" element={<Home progress={progress} isMobile={isMobile} />} />
               <Route 
                 path="/flashcards" 
-                element={<Flashcards questions={questions.filter(q => q.category !== 'signs')} updateProgress={updateProgress} isMobile={isMobile} />} 
+                element={
+                  <ProtectedRoute>
+                    <Flashcards questions={questions.filter(q => q.category !== 'signs')} updateProgress={updateProgress} isMobile={isMobile} />
+                  </ProtectedRoute>
+                } 
               />
               <Route 
                 path="/practice" 
-                element={<Practice questions={questions} updateProgress={updateProgress} isMobile={isMobile} />} 
+                element={
+                  <ProtectedRoute>
+                    <Practice questions={questions} updateProgress={updateProgress} isMobile={isMobile} />
+                  </ProtectedRoute>
+                } 
               />
               <Route 
                 path="/signs" 
-                element={<Signs questions={questions.filter(q => q.category === 'signs')} updateProgress={updateProgress} isMobile={isMobile} />} 
+                element={
+                  <ProtectedRoute>
+                    <Signs questions={questions.filter(q => q.category === 'signs')} updateProgress={updateProgress} isMobile={isMobile} />
+                  </ProtectedRoute>
+                } 
               />
               <Route 
                 path="/progress" 
-                element={<Progress progress={progress} isMobile={isMobile} />} 
+                element={
+                  <ProtectedRoute>
+                    <Progress progress={progress} isMobile={isMobile} />
+                  </ProtectedRoute>
+                } 
               />
             </Routes>
           </Box>
         </Box>
       </NotificationProvider>
     </ThemeProvider>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

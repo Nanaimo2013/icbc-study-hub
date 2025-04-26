@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # ICBC Study Hub - Entrypoint Script for Pterodactyl
 
 # Exit on error
@@ -22,45 +22,8 @@ echo "NPM: $(npm -v)"
 echo "Platform: $(uname -s)"
 echo "Architecture: $(uname -m)"
 
-# Set environment variables
-export PORT=${PORT:-3000}
-export NODE_ENV=${NODE_ENV:-production}
-
-echo "Starting with:"
-echo "PORT: $PORT"
-echo "NODE_ENV: $NODE_ENV"
-
-# Check if we're in a Pterodactyl environment
-if [ -n "$P_SERVER_LOCATION" ]; then
-    echo "Running in Pterodactyl environment"
-fi
-
-# Check for node_modules
-if [ ! -d "node_modules" ] || [ ! -f "node_modules/.installed" ]; then
-    echo "Installing dependencies..."
-    npm ci
-    touch node_modules/.installed
-fi
-
-# Print environment for debugging (excluding sensitive data)
-echo "Node Environment: $NODE_ENV"
-echo "Port: $PORT"
-
-# Ensure required directories exist
-mkdir -p /app/logs
-
-# Wait for any dependent services (if needed)
-# Example: wait-for-it.sh db:3306 -t 60
-
-# Start the application with proper production flags
-if [ "$NODE_ENV" = "production" ]; then
-    # Use PM2 in production for better process management
-    npm install -g pm2
-    pm2-runtime start npm -- start
-else
-    # Development mode
-    npm start
-fi
+# Change to container directory
+cd /home/container || exit 1
 
 # Output Current Running Process
 echo "Starting container with the following settings:"
@@ -69,9 +32,32 @@ echo "Current working directory: $(pwd)"
 echo "Node.js version: $(node -v)"
 echo "NPM version: $(npm -v)"
 
-# Replace Startup Variables
-MODIFIED_STARTUP=$(echo -e ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')
-echo ":/home/container$ ${MODIFIED_STARTUP}"
+# Default environment variables
+export NODE_ENV=${NODE_ENV:-production}
+export SERVER_PORT=${SERVER_PORT:-25572}
+export PORT=${SERVER_PORT}
+export TZ=${TZ:-UTC}
 
-# Run the Server
-eval ${MODIFIED_STARTUP} 
+# Make scripts executable if they exist
+if [ -f "startup.sh" ]; then
+    chmod +x startup.sh
+fi
+
+if [ -f "install.sh" ]; then
+    chmod +x install.sh
+fi
+
+# Install dependencies if needed
+if [ ! -d "node_modules" ] && [ -f "package.json" ]; then
+    echo "Installing dependencies..."
+    npm install --production
+fi
+
+# Execute the startup script
+if [ -f "startup.sh" ]; then
+    echo "Running startup script..."
+    exec ./startup.sh
+else
+    echo "ERROR: startup.sh not found!"
+    exit 1
+fi 

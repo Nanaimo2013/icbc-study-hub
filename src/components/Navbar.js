@@ -3,32 +3,45 @@ import {
   Box, 
   BottomNavigation, 
   BottomNavigationAction, 
-  Paper
+  Paper,
+  Button,
+  Tooltip
 } from '@mui/material';
 import { 
   Home as HomeIcon, 
   School as SchoolIcon, 
   Quiz as QuizIcon, 
   Image as ImageIcon, 
-  BarChart as BarChartIcon
+  BarChart as BarChartIcon,
+  Login as LoginIcon,
+  Logout as LogoutIcon,
+  Person as PersonIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-
-const navItems = [
-  { label: 'Home', path: '/', icon: <HomeIcon /> },
-  { label: 'Flashcards', path: '/flashcards', icon: <SchoolIcon /> },
-  { label: 'Practice Test', path: '/practice', icon: <QuizIcon /> },
-  { label: 'Road Signs', path: '/signs', icon: <ImageIcon /> },
-  { label: 'Progress', path: '/progress', icon: <BarChartIcon /> },
-];
+import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = ({ isMobile, currentPath }) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { currentUser, logout } = useAuth();
+  
+  // Define navigation items based on authentication status
+  const navItems = [
+    { label: 'Home', path: '/', icon: <HomeIcon />, alwaysShow: true },
+    { label: 'Flashcards', path: '/flashcards', icon: <SchoolIcon />, alwaysShow: true },
+    { label: 'Practice Test', path: '/practice', icon: <QuizIcon />, alwaysShow: true },
+    { label: 'Road Signs', path: '/signs', icon: <ImageIcon />, alwaysShow: true },
+    { label: 'Progress', path: '/progress', icon: <BarChartIcon />, alwaysShow: true },
+  ];
   
   const handleNavigation = (path) => {
     navigate(path);
     if (menuOpen) setMenuOpen(false);
+  };
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
 
   // Current navigation value based on the path
@@ -40,9 +53,11 @@ const Navbar = ({ isMobile, currentPath }) => {
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100 }} elevation={3}>
         <BottomNavigation
           showLabels
-          value={currentValue}
+          value={currentValue !== -1 ? currentValue : false}
           onChange={(event, newValue) => {
-            handleNavigation(navItems[newValue].path);
+            if (newValue < navItems.length) {
+              handleNavigation(navItems[newValue].path);
+            }
           }}
         >
           {navItems.map((item) => (
@@ -52,6 +67,19 @@ const Navbar = ({ isMobile, currentPath }) => {
               icon={item.icon} 
             />
           ))}
+          {!currentUser ? (
+            <BottomNavigationAction 
+              label="Login" 
+              icon={<LoginIcon />} 
+              onClick={() => navigate('/login')}
+            />
+          ) : (
+            <BottomNavigationAction 
+              label="Logout" 
+              icon={<LogoutIcon />} 
+              onClick={handleLogout}
+            />
+          )}
         </BottomNavigation>
       </Paper>
     );
@@ -66,6 +94,7 @@ const Navbar = ({ isMobile, currentPath }) => {
         backgroundColor: 'background.paper',
         boxShadow: 1,
         mb: 3,
+        position: 'relative'
       }}
       component="nav"
     >
@@ -92,6 +121,41 @@ const Navbar = ({ isMobile, currentPath }) => {
           {item.label}
         </Box>
       ))}
+      
+      {/* Auth button - positioned to the right */}
+      <Box sx={{ 
+        position: 'absolute',
+        right: 16,
+        top: '50%',
+        transform: 'translateY(-50%)'
+      }}>
+        {!currentUser ? (
+          <Button 
+            variant="outlined" 
+            color="primary" 
+            startIcon={<LoginIcon />}
+            onClick={() => navigate('/login')}
+            size="small"
+          >
+            Login
+          </Button>
+        ) : (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Tooltip title={currentUser.username || 'User'}>
+              <PersonIcon sx={{ mr: 1, color: 'primary.main' }} />
+            </Tooltip>
+            <Button 
+              variant="outlined" 
+              color="primary" 
+              startIcon={<LogoutIcon />}
+              onClick={handleLogout}
+              size="small"
+            >
+              Logout
+            </Button>
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 };

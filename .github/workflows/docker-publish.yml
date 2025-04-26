@@ -2,13 +2,21 @@ name: Docker Build and Publish
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master, develop ]
+    tags: [ 'v*.*.*' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag for manual release'
+        required: false
+        default: ''
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  DOCKER_BUILDKIT: 1
 
 jobs:
   build-and-push:
@@ -16,6 +24,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+      # This is needed for tagging the release
+      id-token: write
 
     steps:
       - name: Checkout repository

@@ -1,16 +1,16 @@
-#!/bin/bash
+#!/bin/sh
 
 # Exit on error
 set -e
 
-cd /home/container
+cd /home/container || exit 1
 
 # Output current state
 echo "------------------------------------"
 echo "Starting installation process..."
-echo "Current directory: $(pwd)"
-echo "Node.js version: $(node -v)"
-echo "NPM version: $(npm -v)"
+printf "Current directory: %s\n" "$(pwd)"
+printf "Node.js version: %s\n" "$(node -v)"
+printf "NPM version: %s\n" "$(npm -v)"
 echo "------------------------------------"
 
 # Clone repository if it doesn't exist

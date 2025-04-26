@@ -2,47 +2,49 @@ FROM node:16-bullseye-slim
 
 WORKDIR /home/container
 
-# Install required system dependencies
-RUN apt-get update && \
-    apt-get install -y \
-    nginx \
-    curl \
-    ca-certificates \
-    openssl \
-    git \
-    tzdata \
-    bash \
+RUN apt-get update \
+    && apt-get install -y \
+        nginx \
+        curl \
+        ca-certificates \
+        openssl \
+        git \
+        tzdata \
+        bash \
+        tini \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-# Copy application files
-COPY . .
 
 # Install PM2 globally
 RUN npm install -g pm2
 
-# Install dependencies
-COPY package*.json ./
-RUN npm ci --only=production
+# Copy application files
+COPY . /home/container/
+COPY ./entrypoint.sh /entrypoint.sh
+COPY ./startup.sh /startup.sh
+COPY ./install.sh /install.sh
 
-# Copy configuration files
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Make scripts executable
+RUN chmod +x /entrypoint.sh /startup.sh /install.sh
 
-# Default environment variables
-ENV NODE_ENV=production
-ENV PORT=3000
-ENV TZ=UTC
-
-# Container configuration
+# Set up container user
 USER container
 ENV USER=container HOME=/home/container
 
-# Expose ports
+# Set default environment variables
+ENV NODE_ENV=production \
+    PORT=3000 \
+    TZ=UTC
+
+# Create necessary directories
+RUN mkdir -p /home/container/logs \
+    && mkdir -p /home/container/tmp
+
+# Set up volume
+VOLUME [ "/home/container" ]
+
 EXPOSE 3000
 
-# Set default command
-CMD ["/bin/bash", "/entrypoint.sh"]
-
-# Tell Pterodactyl where it can find the server data
-VOLUME ["/home/container"] 
+# Use tini as init
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD [ "/bin/sh", "/entrypoint.sh" ] 
